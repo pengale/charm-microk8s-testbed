@@ -1,0 +1,17 @@
+# Example bundle that deploys the microk8s-test charm on a machine
+# with sufficient available resources.
+#
+# Note: If not running from within a checkout of the charm's source
+# code, you may need to adjust the charm path below.
+
+machines:
+  '0':
+    constraints: cores=2 mem=8G root-disk=40G
+    series: focal
+
+applications:
+  microk8s-test:
+    charm: ./microk8s-test.charm
+    to:
+      - '0'
+    num_units: 1

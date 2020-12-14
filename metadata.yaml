@@ -1,0 +1,10 @@
+# Copyright 2020 Pete Vander Giessen
+# See LICENSE file for licensing details.
+name: microk8s-test
+description: |
+  Test out a microk8s install
+summary: |
+  Quick way to spin up a machine, drop Juju and Microk8s on it, and bootstrap a controller.
+series: [focal]
+
+

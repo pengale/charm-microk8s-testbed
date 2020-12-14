@@ -1,0 +1,21 @@
+# Emacs
+
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Operator Framework
+*.charm
+build/
+
+

@@ -1,0 +1,9 @@
+# Copyright 2020 Pete Vander Giessen
+# See LICENSE file for licensing details.
+options:
+  cloud_user:
+    default: ubuntu
+    description: |
+      A user account that we can assume will exist on the
+      machine. Should be the same user as the user used by `juju ssh`
+    type: string
