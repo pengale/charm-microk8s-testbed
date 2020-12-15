@@ -72,8 +72,9 @@ class Microk8STestCharm(CharmBase):
 
     def __init__(self, *args):
         super().__init__(*args)
-        self.framework.observe(self.on.start, self._on_start)
         self._stored.cloud_user = self.config['cloud_user']
+        self.framework.observe(self.on.start, self._on_start)
+        self.framework.observe(self.on.status_action, self._on_status_action)
 
     def _ensure_microk8s(self):
         """
@@ -132,6 +133,15 @@ class Microk8STestCharm(CharmBase):
         # Final output
         shell('juju models', user=user)
         self.unit.status = ActiveStatus('Ready.')
+
+    def _on_status_action(self, event):
+        """
+        Add a juju status action.
+
+        """
+        user = self._stored.cloud_user
+        out = shell('juju status', user=user, save_out=True)
+        event.set_results({"juju_status": out})
 
 
 if __name__ == "__main__":
