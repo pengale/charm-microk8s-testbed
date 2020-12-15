@@ -36,7 +36,7 @@ class Microk8STestCharm(CharmBase):
         if 'microk8s' in check_output('snap list'):
             return
 
-        # Install and shell microk8s
+        # Install and check microk8s
         self.unit.status = MaintenanceStatus('Installing microk8s.')
         check('snap install microk8s --classic')
         check('usermod -a -G microk8s {}'.format(user))

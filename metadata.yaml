@@ -6,5 +6,3 @@ description: |
 summary: |
   Quick way to spin up a machine, drop Juju and Microk8s on it, and bootstrap a controller.
 series: [focal]
-
-
