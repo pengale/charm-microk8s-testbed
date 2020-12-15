@@ -5,7 +5,6 @@
 import logging
 import shlex
 import subprocess
-import pwd
 import os
 
 from ops.charm import CharmBase

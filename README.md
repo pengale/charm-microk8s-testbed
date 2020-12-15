@@ -18,15 +18,19 @@ juju deploy microk8s-test --constraints "mem=8G root-disk=40G cpus=2"
 
 ## Developing
 
-Create and activate a virtualenv with the development requirements:
+Install tox with your system's package manager. For example:
 
-    virtualenv -p python3 venv
-    source venv/bin/activate
-    pip install -r requirements-dev.txt
+    sudo apt install tox
 
 ## Testing
 
 The Python operator framework includes a very nice harness for testing
-operator behaviour without full deployment. Just `run_tests`:
+operator behaviour without full deployment, which tox has been setup
+to call:
 
-    ./run_tests
+    tox
+    
+You can also run a destructive deploy test, which will create a
+testbed model on the currently bootstrapped Juju controller
+(destroying it first to clean up if need be), then deploy microk8s +
+Juju to a machine in it.

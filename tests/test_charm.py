@@ -2,34 +2,27 @@
 # See LICENSE file for licensing details.
 
 import unittest
-from unittest.mock import Mock
+
+from unittest.mock import patch
 
 from ops.testing import Harness
 from charm import Microk8STestCharm
 
 
 class TestCharm(unittest.TestCase):
-    def test_config_changed(self):
+    def test_config(self):
         harness = Harness(Microk8STestCharm)
         self.addCleanup(harness.cleanup)
         harness.begin()
-        self.assertEqual(list(harness.charm._stored.things), [])
-        harness.update_config({"thing": "foo"})
-        self.assertEqual(list(harness.charm._stored.things), ["foo"])
+        self.assertEqual(harness.charm._stored.cloud_user, "ubuntu")
 
-    def test_action(self):
+    @patch('charm.shell')
+    def test_install(self, mock_shell):
         harness = Harness(Microk8STestCharm)
-        harness.begin()
-        # the harness doesn't (yet!) help much with actions themselves
-        action_event = Mock(params={"fail": ""})
-        harness.charm._on_fortune_action(action_event)
+        self.addCleanup(harness.cleanup)
+        harness.begin_with_initial_hooks()
+        mock_shell.assert_called_with('juju models', user='ubuntu')
 
-        self.assertTrue(action_event.set_results.called)
 
-    def test_action_fail(self):
-        harness = Harness(Microk8STestCharm)
-        harness.begin()
-        action_event = Mock(params={"fail": "fail this"})
-        harness.charm._on_fortune_action(action_event)
-
-        self.assertEqual(action_event.fail.call_args, [("fail this",)])
+if __name__ == '__main__':
+    unittest.main()
