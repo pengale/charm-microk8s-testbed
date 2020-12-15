@@ -31,19 +31,21 @@ class TestCharm(unittest.TestCase):
         harness.begin()
         self.assertEqual(harness.charm._stored.cloud_user, "ubuntu")
 
-    @patch('charm.shell')
-    def test_install(self, mock_shell):
+    @patch('charm.check_output')
+    @patch('charm.check')
+    def test_install(self, mock_check, mock_check_output):
         harness = Harness(Microk8STestCharm)
         self.addCleanup(harness.cleanup)
         harness.begin_with_initial_hooks()
-        mock_shell.assert_called_with('juju models', user='ubuntu')
+        mock_check.assert_called_with('juju models', user='ubuntu')
+        mock_check_output.assert_called_with('snap list')
 
-    @patch('charm.shell')
-    def test_action(self, mock_shell):
+    @patch('charm.check_output')
+    def test_action(self, mock_check_output):
         harness = Harness(Microk8STestCharm)
         harness.begin()
         action_event = Mock(params={})
-        mock_shell.return_value = EXAMPLE_STATUS
+        mock_check_output.return_value = EXAMPLE_STATUS
 
         harness.charm._on_status_action(action_event)
 

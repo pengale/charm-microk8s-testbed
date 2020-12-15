@@ -3,72 +3,15 @@
 # See LICENSE file for licensing details.
 
 import logging
-import shlex
-import subprocess
-import os
 
 from ops.charm import CharmBase
 from ops.main import main
 from ops.model import ActiveStatus, MaintenanceStatus
 from ops.framework import StoredState
 
-logger = logging.getLogger(__name__)
+from shell import check, check_output
 
-
-def shell(cmd, user='root', save_out=False):
-    """Run a shell command in a subprocess.
-
-    A lot of this charm is just bash commands, and we'll use this to
-    make them play nicely, piping STDOUT and STDERR to our logger.
-
-    :param cmd: string representing the bash call.
-    :param user: Optionally run the command as this user.
-    :param save_out: save and return output. Warning: this can get large.
-        Use with caution!
-
-    Raises an error if the command returns a non zero exit
-    code. Returns either an empty string, or the output on a succesful
-    command.
-
-    """
-    env = os.environ.copy()
-    output = ""
-
-    if user != 'root':
-        cmd = "sudo -H -u {} bash -c '{}'".format(user, cmd)
-
-    logger.info("Running '{}'".format(cmd))
-
-    proc = subprocess.Popen(
-        shlex.split(cmd),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        bufsize=1,
-        universal_newlines=True,
-        encoding='utf-8',
-        env=env
-    )
-
-    for line in iter(proc.stdout.readline, ''):
-        logger.debug("(python subprocess) {}".format(line))
-        if save_out:
-            output += line
-
-    proc.wait()
-    if proc.returncode:
-        raise subprocess.CalledProcessError(proc.returncode, cmd)
-
-    return output  # Returns empty string if save_out not set.
-
-
-def is_installed(snap_name):
-    """
-    Check to see if a given snap is installed.
-
-    :param name: Name of the snap.
-
-    """
-    return snap_name in shell('snap list', save_out=True)
+logger = logging.getLogger('charm')
 
 
 class Microk8STestCharm(CharmBase):
@@ -90,19 +33,19 @@ class Microk8STestCharm(CharmBase):
         """
         user = self._stored.cloud_user
 
-        if is_installed('microk8s'):
+        if 'microk8s' in check_output('snap list'):
             return
 
         # Install and shell microk8s
         self.unit.status = MaintenanceStatus('Installing microk8s.')
-        shell('snap install microk8s --classic')
-        shell('usermod -a -G microk8s {}'.format(user))
-        shell('microk8s status --wait-ready', user=user)
-        shell('microk8s.kubectl get all --all-namespaces', user=user)
+        check('snap install microk8s --classic')
+        check('usermod -a -G microk8s {}'.format(user))
+        check('microk8s status --wait-ready', user=user)
+        check('microk8s.kubectl get all --all-namespaces', user=user)
 
         # Enable components
         self.unit.status = MaintenanceStatus('Enabling microk8s components.')
-        shell('microk8s.enable dns storage', user=self.config['cloud_user'])
+        check('microk8s.enable dns storage', user=self.config['cloud_user'])
 
     def _ensure_juju(self):
         """
@@ -114,14 +57,14 @@ class Microk8STestCharm(CharmBase):
         """
         user = self._stored.cloud_user
 
-        if is_installed('juju'):
+        if 'juju' in check_output('snap list'):
             return
 
         # Bootstrap and add a model.
         self.unit.status = MaintenanceStatus('Bootstrapping Juju.')
-        shell('snap install juju --classic')
-        shell('juju bootstrap microk8s micro', user=user)
-        shell('juju add-model testing', user=user)
+        check('snap install juju --classic')
+        check('juju bootstrap microk8s micro', user=user)
+        check('juju add-model testing', user=user)
 
     def _on_start(self, event):
         """
@@ -131,11 +74,13 @@ class Microk8STestCharm(CharmBase):
         """
         user = self._stored.cloud_user
 
+        logger.debug('Running "on start" action.')
+
         self._ensure_microk8s()
         self._ensure_juju()
 
         # Final output
-        shell('juju models', user=user)
+        check('juju models', user=user)
         self.unit.status = ActiveStatus('Ready.')
 
     def _on_status_action(self, event):
@@ -143,8 +88,10 @@ class Microk8STestCharm(CharmBase):
         Add a juju status action.
 
         """
+        logger.debug('Running juju status.')
+
         user = self._stored.cloud_user
-        out = shell('juju status', user=user, save_out=True)
+        out = check_output('juju status', user=user)
         event.set_results({"juju_status": out})
 
 

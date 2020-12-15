@@ -2,25 +2,34 @@
 
 ## Description
 
-This is a charm that quickly deploys a machine, installs microk8s and
+This is a charm built to deploy an machine, install microk8s and
 microstack on it, and bootstraps a Juju controller on microk8s.
 
 ## Usage
 
-The intent is to provide a quick way of testing things out in
-microk8s, while allowing the deployment to be torn down between times.
+The intent is to provide a straightforward way of testing things out
+in microk8s, with easy teardown and redeploy.
 
 Note that you need to deploy this on a relatively beefy machine. For
 example:
 
-juju deploy microk8s-test --constraints "mem=8G root-disk=40G cpus=2"
-
+    juju deploy microk8s-test \
+        --constraints "mem=8G root-disk=40G cpus=2"
 
 ## Developing
 
-Install tox with your system's package manager. For example:
+This charm uses Python Tox to run its unit and functional
+tests. Instructions on installing tox live here:
 
-    sudo apt install tox
+https://tox.readthedocs.io/en/latest/install.html
+
+In brief, you can:
+
+    pip install tox
+
+Or you can:
+
+    apt/brew install tox
 
 ## Testing
 
@@ -29,8 +38,10 @@ operator behaviour without full deployment, which tox has been setup
 to call:
 
     tox
-    
+
 You can also run a destructive deploy test, which will create a
 testbed model on the currently bootstrapped Juju controller
 (destroying it first to clean up if need be), then deploy microk8s +
-Juju to a machine in it.
+Juju to a machine in it. Run it with:
+
+    tox -e deploy
