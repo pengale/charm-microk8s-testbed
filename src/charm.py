@@ -16,15 +16,19 @@ logger = logging.getLogger(__name__)
 
 
 def shell(cmd, user='root', save_out=False):
-    """Run a shell command, piping STDOUT and STDERR to our logger.
+    """Run a shell command in a subprocess.
 
-    :param cmd: string to be composed into the bash call.
-    :param user: run the command as this user. Defaults to root.
+    A lot of this charm is just bash commands, and we'll use this to
+    make them play nicely, piping STDOUT and STDERR to our logger.
+
+    :param cmd: string representing the bash call.
+    :param user: Optionally run the command as this user.
     :param save_out: save and return output. Warning: this can get large.
         Use with caution!
 
-    Logs STDOUT and STDERR to Juju debug log. Raises an error if the
-    command returns a non zero exit code.
+    Raises an error if the command returns a non zero exit
+    code. Returns either an empty string, or the output on a succesful
+    command.
 
     """
     env = os.environ.copy()
