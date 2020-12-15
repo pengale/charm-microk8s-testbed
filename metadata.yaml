@@ -1,6 +1,6 @@
 # Copyright 2020 Pete Vander Giessen
 # See LICENSE file for licensing details.
-name: microk8s-test
+name: microk8s-testbed
 description: |
   Test out a microk8s install
 summary: |

@@ -1,4 +1,4 @@
-# microk8s-test
+# microk8s-testbed
 
 ## Description
 
@@ -13,7 +13,7 @@ in microk8s, with easy teardown and redeploy.
 Note that you need to deploy this on a relatively beefy machine. For
 example:
 
-    juju deploy microk8s-test \
+    juju deploy microk8s-testbed \
         --constraints "mem=8G root-disk=40G cpus=2"
 
 ## Developing

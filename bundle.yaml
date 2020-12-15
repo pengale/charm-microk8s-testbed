@@ -1,4 +1,4 @@
-# Example bundle that deploys the microk8s-test charm on a machine
+# Example bundle that deploys the microk8s-testbed charm on a machine
 # with sufficient available resources.
 #
 # Note: If not running from within a checkout of the charm's source
@@ -10,8 +10,8 @@ machines:
     series: focal
 
 applications:
-  microk8s-test:
-    charm: ./microk8s-test.charm
+  microk8s-testbed:
+    charm: ./microk8s-testbed.charm
     to:
       - '0'
     num_units: 1

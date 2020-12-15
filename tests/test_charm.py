@@ -11,13 +11,13 @@ from charm import Microk8STestCharm
 
 EXAMPLE_STATUS = """
 Model    Controller   Cloud/Region   Version  SLA          Timestamp
-testbed  aws-testbed  aws/us-east-1  2.8.6    unsupported  19:21:47-05:00
+microk8s-testbed  aws-testbed  aws/us-east-1  2.8.6    unsupported  19:21:47-05:00
 
 App            Version  Status  Scale  Charm          Store  Rev  OS      Message
-microk8s-test           active      1  microk8s-test  local    0  ubuntu  Ready.
+microk8s-testbed           active      1  microk8s-testbed  local    0  ubuntu  Ready.
 
 Unit              Workload  Agent  Machine  Public address  Ports  Message
-microk8s-test/0*  active    idle   0        184.73.80.35           Ready.
+microk8s-testbed/0*  active    idle   0        184.73.80.35           Ready.
 
 Machine  State    DNS           Inst id              Series  AZ          Message
 0        started  184.73.80.35  i-0cb1ea098314d2805  focal   us-east-1a  running
