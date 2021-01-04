@@ -3,7 +3,7 @@
 ## Description
 
 This is a charm built to deploy an machine, install microk8s and
-microstack on it, and bootstraps a Juju controller on microk8s.
+Juju on it, and bootstrap a Juju controller on microk8s.
 
 ## Usage
 
